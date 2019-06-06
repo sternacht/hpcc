@@ -1,11 +1,12 @@
 FROM amd64/ubuntu:16.04
 
 ## update system and install essential
+RUN apt update -y
 RUN apt install build-essential vim wget git gfortran mlocate autoconf automake libtool make cmake -y
 
 ## install openmpi & openblas
 RUN cd /home && wget https://download.open-mpi.org/release/open-mpi/v3.1/openmpi-3.1.2.tar.gz && wget https://github.com/xianyi/OpenBLAS/archive/v0.3.6.tar.gz
-RUN tar zxf openmpi-3.1.2.tar.gz && tar zxf v0.3.6.tar.gz && mkdir /home/openmpi && mkdir /home/openblas
+RUN tar zxf /home/openmpi-3.1.2.tar.gz -C /home && tar zxf /home/v0.3.6.tar.gz -C /home && mkdir /home/openmpi && mkdir /home/openblas
 RUN cd /home/openmpi-3.1.2 && ./configure CXX=g++ CC=gcc --enable-mpi-cxx --enable-mpi-fortran FORTRAN=gfortran --prefix=/home/openmpi && make -j8 && make install -j8
 RUN cd /home/OpenBLAS-0.3.6 && export OMP_NUM_THREADS=1
 RUN make USE_OPENMP=1 PREFIX=/openblas NUM_THREADS=64 TARGET=NEHALEM LIBNAMESUFFIX=omp USE_THREAD=1
